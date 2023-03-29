@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import random
 import collections
+import sys
 
 def filter_by_rules(rules,words,correct_indexes,present_indexes):
     valid_words = []
@@ -75,7 +76,16 @@ def get_next_word():
     # repeat until game is over
 
 if __name__ == '__main__':
-    driver = webdriver.Firefox()
+    browser = input('which browser do you use? (firefox,chrome,edge) ')
+    if browser.lower() == 'firefox':
+        driver = webdriver.Firefox()
+    elif browser.lower() == 'chrome':
+        driver = webdriver.Chrome()
+    elif browser == 'edge':
+        driver = webdriver.Edge()
+    else:
+        print(f'{browser} not supported by this app')
+        sys.exit(1)
     driver.get("https://www.nytimes.com/games/wordle/index.html")
     #driver.get('https://wordleunlimited.org/')
     sleep(2)
