@@ -104,7 +104,6 @@ if __name__ == '__main__':
                     key.click()
                 if next_letter == '\n':
                     enter_key.click()
-                    sleep(3)
+                    sleep(1)
                     break
-                
-    driver.close()
+        stats = driver.find_elements(By.CLASS_NAME, "Stats-module_statisticsHeading__CExdL")
