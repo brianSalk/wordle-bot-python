@@ -6,15 +6,16 @@ import random
 import collections
 import sys
 
-def filter_by_rules(rules,words,correct_indexes,present_indexes):
+def filter_by_rules(absent,words,correct_indexes,present_indexes):
     valid_words = []
     bad_letters = []
     good_letters = []
-    for letter,rule in rules.items():
-        if rule == 'absent':
-            bad_letters.append(letter.upper())
-        elif rule == 'present' or rule == 'correct':
-            good_letters.append(letter.upper())
+    for letter in absent:
+        bad_letters.append(letter)
+    for letter in present_indexes.keys():
+        good_letters.append(letter)
+    for letter in present_indexes.keys():
+        good_letters.append(letter)
     print(f"good letter//div[contains(@class, 'foo')]s: {good_letters}")
     for word in words:
         is_valid = True
@@ -26,7 +27,7 @@ def filter_by_rules(rules,words,correct_indexes,present_indexes):
             if good not in word:
                 is_valid = False
                 break
-        for letter,indexes in correct_indexes.items():
+        for letter, indexes in correct_indexes.items():
             for index in indexes:
                 if word[index] != letter:
                     is_valid = False
@@ -45,16 +46,10 @@ def get_next_word():
     with open('five_upper') as f:
         words = f.readlines()
     # find the lowest row that gives rules
-    rules = {}
-    buttons = driver.find_elements(By.XPATH, "//button[contains(@class, 'Key-module_key__kchQI')]")    
-    for button in buttons:
-        data_state = button.get_attribute('data-state')
-        letter = button.get_attribute('data-key')
-        if data_state != None:
-            rules[letter] = data_state
     tile_count = 0
     correct_indexes = collections.defaultdict(list)
     present_indexes = collections.defaultdict(list)
+    absent = set()
     for tile in driver.find_elements(By.XPATH, "//div[contains(@class, 'Tile-module_tile__UWEHN')]"):
         data_state = tile.get_attribute('data-state')
         letter = tile.text.upper()
@@ -62,13 +57,15 @@ def get_next_word():
             correct_indexes[letter].append(tile_count % 5)
         if data_state == 'present':
             present_indexes[letter].append(tile_count % 5)
+        if data_state == 'absent':
+            absent.add(letter)
         tile_count += 1
-    if not rules:
+    if not absent and not present_indexes and not correct_indexes:
         # return starting word
         return 'SLATE\n'
     else:
-        print(rules)
-        valid_words = filter_by_rules(rules,words,correct_indexes,present_indexes)
+        #print(rules)
+        valid_words = filter_by_rules(absent,words,correct_indexes,present_indexes)
     # pick random (or other strategy) word from remaining valid words
     next_word = valid_words[random.randint(0,len(valid_words)-1)]
     print(f'next word is: {next_word}')
@@ -87,13 +84,10 @@ if __name__ == '__main__':
         print(f'{browser} not supported by this app')
         sys.exit(1)
     driver.get("https://www.nytimes.com/games/wordle/index.html")
-    #driver.get('https://wordleunlimited.org/')
-    sleep(2)
     keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
-    # <dialog class="Modal-module_modalOverlay__cdZDa Modal-module_paddingTop__xhWdR">
     # close initial pop-up, need to click anywhere on the screen
     c = driver.find_element(By.TAG_NAME, 'path')
-    sleep(1)
+
     c.click()
     enter_key = driver.find_element(By.XPATH, "//button[text()='enter']")
     start_words = ["audio", "pious", "radio", "slate"]
@@ -104,6 +98,6 @@ if __name__ == '__main__':
                     key.click()
                 if next_letter == '\n':
                     enter_key.click()
-                    sleep(1)
+                    sleep(2)
                     break
         stats = driver.find_elements(By.CLASS_NAME, "Stats-module_statisticsHeading__CExdL")
