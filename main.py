@@ -8,15 +8,14 @@ import sys
 
 def filter_by_rules(absent,words,correct_indexes,present_indexes):
     valid_words = []
-    bad_letters = []
-    good_letters = []
+    bad_letters = set()
+    good_letters = set()
     for letter in absent:
-        bad_letters.append(letter)
+        bad_letters.add(letter)
     for letter in present_indexes.keys():
-        good_letters.append(letter)
+        good_letters.add(letter)
     for letter in present_indexes.keys():
-        good_letters.append(letter)
-    print(f"good letter//div[contains(@class, 'foo')]s: {good_letters}")
+        good_letters.add(letter)
     for word in words:
         is_valid = True
         for bad in bad_letters:
@@ -57,22 +56,21 @@ def get_next_word():
             correct_indexes[letter].append(tile_count % 5)
         if data_state == 'present':
             present_indexes[letter].append(tile_count % 5)
-        if data_state == 'absent':
+        if data_state == 'absent' and letter not in present_indexes and letter not in correct_indexes:
             absent.add(letter)
         tile_count += 1
     if not absent and not present_indexes and not correct_indexes:
         # return starting word
         return 'SLATE\n'
     else:
-        #print(rules)
         valid_words = filter_by_rules(absent,words,correct_indexes,present_indexes)
     # pick random (or other strategy) word from remaining valid words
     next_word = valid_words[random.randint(0,len(valid_words)-1)]
-    print(f'next word is: {next_word}')
     return next_word
     # repeat until game is over
 
 if __name__ == '__main__':
+    # select browser from input
     browser = input('which browser do you use? (firefox,chrome,edge) ')
     if browser.lower() == 'firefox':
         driver = webdriver.Firefox()
