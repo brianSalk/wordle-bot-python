@@ -15,7 +15,6 @@ def filter_by_rules(rules,words,correct_indexes,present_indexes):
             bad_letters.append(letter.upper())
         elif rule == 'present' or rule == 'correct':
             good_letters.append(letter.upper())
-    print(f"good letter//div[contains(@class, 'foo')]s: {good_letters}")
     for word in words:
         is_valid = True
         for bad in bad_letters:
@@ -67,11 +66,9 @@ def get_next_word():
         # return starting word
         return 'SLATE\n'
     else:
-        print(rules)
         valid_words = filter_by_rules(rules,words,correct_indexes,present_indexes)
     # pick random (or other strategy) word from remaining valid words
     next_word = valid_words[random.randint(0,len(valid_words)-1)]
-    print(f'next word is: {next_word}')
     return next_word
     # repeat until game is over
 
