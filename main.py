@@ -6,12 +6,8 @@ import random
 import collections
 import sys
 
-def filter_by_rules(rules,words,correct_indexes,present_indexes,counts):
+def filter_by_rules(bad_letters,words,correct_indexes,present_indexes,counts):
     valid_words = []
-    bad_letters = []
-    for letter,rule in rules.items():
-        if rule == 'absent':
-            bad_letters.append(letter.upper())
     for word in words:
         is_valid = True
         for char,count in counts.items():
@@ -34,15 +30,15 @@ def filter_by_rules(rules,words,correct_indexes,present_indexes,counts):
             valid_words.append(word)
     
     return valid_words
-def get_rules():
-    rules = {}
+def get_absent_letters():
+    absent_letters = set()
     buttons = driver.find_elements(By.XPATH, "//button[contains(@class, 'Key-module_key__kchQI')]")    
     for button in buttons:
         data_state = button.get_attribute('data-state')
-        letter = button.get_attribute('data-key')
-        if data_state != None:
-            rules[letter] = data_state
-    return rules
+        letter = button.get_attribute('data-key').upper()
+        if data_state and data_state == 'absent':
+            absent_letters.add(letter)
+    return absent_letters
 def get_correct_and_present_indexes():
     tile_count = 0
     correct_indexes = collections.defaultdict(list)
@@ -62,12 +58,11 @@ def get_correct_and_present_indexes():
             next_row = [(letter,data_state)]
         tile_count += 1
     counts = collections.Counter([each[0] for each in last_row if each[1] == 'present' or each[1] == 'correct'] )
-    print(counts)
     return (correct_indexes, present_indexes, counts)
 
 def get_next_word():
     # scrape tiles
-    if not rules:
+    if not absent_letters and not correct_indexes and not present_indexes:
         # return starting word
         return ['SLATE\n', 'AUDIO\n', 'PIOUS\n'][random.randint(0,2)]
     else:
@@ -103,8 +98,8 @@ if __name__ == '__main__':
     backspace_key = driver.find_element(By.XPATH, "//button[@aria-label='backspace']")
     while True:
         (correct_indexes, present_indexes,counts) = get_correct_and_present_indexes()
-        rules = get_rules()
-        words = filter_by_rules(rules,words,correct_indexes, present_indexes,counts)
+        absent_letters = get_absent_letters()
+        words = filter_by_rules(absent_letters,words,correct_indexes, present_indexes,counts)
         for next_letter in get_next_word():
             for key in keys:
                 if key.text == next_letter:
