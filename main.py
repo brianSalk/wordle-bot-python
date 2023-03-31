@@ -39,38 +39,18 @@ def filter_by_rules(rules,words,correct_indexes,present_indexes):
     return valid_words
 
 
-def get_data_from_buttons():
-    rules = {}
-    buttons = driver.find_elements(By.XPATH, "//button[contains(@class, 'Key-module_key__kchQI')]")
-    for button in buttons:
-        data_state = button.get_attribute('data-state')
-        letter = button.get_attribute('data-key')
-        if data_state is not None:
-            rules[letter] = data_state
-    return rules
-
-def get_data_from_tiles():
-    buttons = driver.find_elements(By.XPATH, "//button[contains(@class, 'Key-module_key__kchQI')]")
-    for button in buttons:
-        data_state = button.get_attribute('data-state')
-        letter = button.get_attribute('data-key')
-    tile_count = 0
-    correct_indexes = collections.defaultdict(list)
-    present_indexes = collections.defaultdict(list)
-    for tile in driver.find_elements(By.XPATH, "//div[contains(@class, 'Tile-module_tile__UWEHN')]"):
-        data_state = tile.get_attribute('data-state')
-        letter = tile.text.upper()
-        if data_state == 'correct':
-            correct_indexes[letter].append(tile_count % 5)
-        if data_state == 'present':
-            present_indexes[letter].append(tile_count % 5)
-        tile_count += 1
 def get_next_word():
-
+    # load all 5-letter words from dictionary file
+    with open('five_upper') as f:
+        words = f.readlines()
+    # find the lowest row that gives rules
+    rules = {}
     buttons = driver.find_elements(By.XPATH, "//button[contains(@class, 'Key-module_key__kchQI')]")    
     for button in buttons:
         data_state = button.get_attribute('data-state')
         letter = button.get_attribute('data-key')
+        if data_state != None:
+            rules[letter] = data_state
     tile_count = 0
     correct_indexes = collections.defaultdict(list)
     present_indexes = collections.defaultdict(list)
@@ -103,16 +83,14 @@ if __name__ == '__main__':
     else:
         print(f'{browser} not supported by this app')
         sys.exit(1)
-    # read words from file
-    with open('five_upper') as f:
-        words = f.readlines()
-    # open wordle in new browser window
     driver.get("https://www.nytimes.com/games/wordle/index.html")
-    sleep(1)
+    #driver.get('https://wordleunlimited.org/')
+    sleep(2)
     keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
     # <dialog class="Modal-module_modalOverlay__cdZDa Modal-module_paddingTop__xhWdR">
     # close initial pop-up, need to click anywhere on the screen
     c = driver.find_element(By.TAG_NAME, 'path')
+    sleep(1)
     c.click()
     enter_key = driver.find_element(By.XPATH, "//button[text()='enter']")
     start_words = ["audio", "pious", "radio", "slate"]
