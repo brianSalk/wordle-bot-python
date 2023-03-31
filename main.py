@@ -37,13 +37,7 @@ def filter_by_rules(rules,words,correct_indexes,present_indexes):
             valid_words.append(word)
     
     return valid_words
-
-
-def get_next_word():
-    # load all 5-letter words from dictionary file
-    with open('five_upper') as f:
-        words = f.readlines()
-    # find the lowest row that gives rules
+def get_rules():
     rules = {}
     buttons = driver.find_elements(By.XPATH, "//button[contains(@class, 'Key-module_key__kchQI')]")    
     for button in buttons:
@@ -51,6 +45,8 @@ def get_next_word():
         letter = button.get_attribute('data-key')
         if data_state != None:
             rules[letter] = data_state
+    return rules
+def get_correct_and_present_indexes():
     tile_count = 0
     correct_indexes = collections.defaultdict(list)
     present_indexes = collections.defaultdict(list)
@@ -62,15 +58,16 @@ def get_next_word():
         if data_state == 'present':
             present_indexes[letter].append(tile_count % 5)
         tile_count += 1
+    return (correct_indexes, present_indexes)
+
+def get_next_word():
+    # scrape tiles
     if not rules:
         # return starting word
         return 'SLATE\n'
     else:
-        valid_words = filter_by_rules(rules,words,correct_indexes,present_indexes)
-    # pick random (or other strategy) word from remaining valid words
-    next_word = valid_words[random.randint(0,len(valid_words)-1)]
-    return next_word
-    # repeat until game is over
+        next_word = words[random.randint(0,len(words)-1)]
+        return next_word
 
 if __name__ == '__main__':
     browser = input('which browser do you use? (firefox,chrome,edge) ')
@@ -83,24 +80,30 @@ if __name__ == '__main__':
     else:
         print(f'{browser} not supported by this app')
         sys.exit(1)
+
+    # load all 5-letter words from dictionary file
+    with open('five_upper') as f:
+        words = f.readlines()
+    # open url
     driver.get("https://www.nytimes.com/games/wordle/index.html")
-    #driver.get('https://wordleunlimited.org/')
     sleep(2)
+    # get keys to press 
     keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
-    # <dialog class="Modal-module_modalOverlay__cdZDa Modal-module_paddingTop__xhWdR">
-    # close initial pop-up, need to click anywhere on the screen
     c = driver.find_element(By.TAG_NAME, 'path')
     sleep(1)
     c.click()
+    # get enter key, press after each word
     enter_key = driver.find_element(By.XPATH, "//button[text()='enter']")
-    start_words = ["audio", "pious", "radio", "slate"]
     while True:
+        (correct_indexes, present_indexes) = get_correct_and_present_indexes()
+        rules = get_rules()
+        words = filter_by_rules(rules,words,correct_indexes, present_indexes)
         for next_letter in get_next_word():
             for key in keys:
                 if key.text == next_letter:
                     key.click()
                 if next_letter == '\n':
                     enter_key.click()
-                    sleep(1)
+                    sleep(1.7)
                     break
         stats = driver.find_elements(By.CLASS_NAME, "Stats-module_statisticsHeading__CExdL")
