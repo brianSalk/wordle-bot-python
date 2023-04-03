@@ -64,7 +64,7 @@ def get_next_word():
     # scrape tiles
     if not absent_letters and not correct_indexes and not present_indexes:
         # return starting word
-        return ['SLATE\n', 'AUDIO\n', 'PIOUS\n'][random.randint(0,2)]
+        return ['SLATE\n', 'CRANE\n', 'SALET\n'][random.randint(0,2)]
     else:
         next_word = words[random.randint(0,len(words)-1)]
         return next_word
@@ -110,4 +110,3 @@ if __name__ == '__main__':
                         backspace_key.click()
                     sleep(1.4)
                     break
-        stats = driver.find_elements(By.CLASS_NAME, "Stats-module_statisticsHeading__CExdL")
