@@ -86,7 +86,7 @@ if __name__ == '__main__':
         words = f.readlines()
     # open url
     driver.get("https://www.nytimes.com/games/wordle/index.html")
-    sleep(2)
+    sleep(2.5)
     # get keys to press 
     keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
     c = driver.find_element(By.TAG_NAME, 'path')
