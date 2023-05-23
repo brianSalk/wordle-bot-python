@@ -117,10 +117,17 @@ if __name__ == "__main__":
         words = filter_by_rules(
             absent_letters, words, correct_indexes, present_indexes, counts
         )
+        if len(correct_indexes) == 5:
+            print("solved!")
+            input("press ctrl-c to close browser")
         for next_letter in get_next_word():
             for key in keys:
                 if key.text == next_letter:
-                    key.click()
+                    try:
+                        key.click()
+                    except Exception:
+                        print('well this is embarassing...')
+                        input('press ctrl-c to close the browser')
                 if next_letter == "\n":
                     enter_key.click()
                     for _ in range(5):
