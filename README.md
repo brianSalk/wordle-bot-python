@@ -14,4 +14,8 @@ now just run
 python main.py
 ```
 you will be prompted to select your browser, enter the name of your browser as it appears in the list provided.  
-
+If you do not already have selenium installed on your computer you will need to run
+```
+pip install selenium
+```
+before doing any of the above.
