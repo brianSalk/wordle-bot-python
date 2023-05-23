@@ -101,10 +101,12 @@ if __name__ == "__main__":
     driver.get("https://www.nytimes.com/games/wordle/index.html")
     sleep(2.5)
     # get keys to press
-    keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
+    play_button = driver.find_element(By.XPATH, '//button[@class="Welcome-module_button__ZG0Zh" and text()="Play"]')
+    play_button.click()
     c = driver.find_element(By.TAG_NAME, "path")
     sleep(1)
     c.click()
+    keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
     # get enter key, press after each word
     enter_key = driver.find_element(By.XPATH, "//button[text()='enter']")
     # get backspace buton
