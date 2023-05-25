@@ -8,6 +8,12 @@ import sys
 
 
 def filter_by_rules(bad_letters, words, correct_indexes, present_indexes, counts):
+    """
+   takes in bad_letters (letters not in answer), words (all words), 
+   correct_indexes ( dict associating letters to index of correct), present_indexes (dict associating letters to index of correct),
+   counts (dict counting known occurances of letter in answer)
+   returns a list of valid words according to the above rules
+    """
     valid_words = []
     for word in words:
         is_valid = True
@@ -34,6 +40,9 @@ def filter_by_rules(bad_letters, words, correct_indexes, present_indexes, counts
 
 
 def get_absent_letters():
+    """
+    scrape page to get list of words that are not in answer
+    """
     absent_letters = set()
     buttons = driver.find_elements(
         By.XPATH, "//button[contains(@class, 'Key-module_key__kchQI')]"
@@ -47,6 +56,9 @@ def get_absent_letters():
 
 
 def get_correct_and_present_indexes():
+    """
+    scrape page and get correct and present indexes
+    """
     tile_count = 0
     correct_indexes = collections.defaultdict(list)
     present_indexes = collections.defaultdict(list)
@@ -73,6 +85,9 @@ def get_correct_and_present_indexes():
 
 
 def get_next_word():
+    """
+    return next guess.
+    """
     # scrape tiles
     if not absent_letters and not correct_indexes and not present_indexes:
         # return starting word
