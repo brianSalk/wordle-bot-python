@@ -114,7 +114,6 @@ if __name__ == "__main__":
         words = f.readlines()
     # open url
     driver.get("https://www.nytimes.com/games/wordle/index.html")
-    sleep(2.5)
     # get keys to press
     play_button = driver.find_element(By.XPATH, '//button[@class="Welcome-module_button__ZG0Zh" and text()="Play"]')
     play_button.click()
