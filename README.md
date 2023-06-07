@@ -18,4 +18,5 @@ If you do not already have selenium installed on your computer you will need to 
 ```
 pip install selenium
 ```
-before doing any of the above.
+before doing any of the above.  
+You will also need to make sure that the webdriver for your prefered browser is in your `PATH`  
