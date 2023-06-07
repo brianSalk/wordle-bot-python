@@ -9,7 +9,7 @@ import collections
 import sys
 
 
-def filter_by_rules(bad_letters, words, correct_indexes, present_indexes, counts):
+def filter_by_rules(bad_letters, words, correct_indexes, present_indexes, absent_indexes, counts):
     """
    takes in bad_letters (letters not in answer), words (all words), 
    correct_indexes ( dict associating letters to index of correct), present_indexes (dict associating letters to index of correct),
@@ -27,6 +27,11 @@ def filter_by_rules(bad_letters, words, correct_indexes, present_indexes, counts
             if bad in word:
                 is_valid = False
                 break
+        for letter, indexes in absent_indexes.items():
+            for index in indexes:
+                if word[index] == letter:
+                    is_valid = False
+                    break
         for letter, indexes in correct_indexes.items():
             for index in indexes:
                 if word[index] != letter:
@@ -57,13 +62,14 @@ def get_absent_letters():
     return absent_letters
 
 
-def get_correct_and_present_indexes():
+def get_correct_present_and_absent_indexes():
     """
     scrape page and get correct and present indexes
     """
     tile_count = 0
     correct_indexes = collections.defaultdict(list)
     present_indexes = collections.defaultdict(list)
+    absent_indexes = collections.defaultdict(list)
     last_row = []
     next_row = []
     for tile in driver.find_elements(
@@ -76,6 +82,8 @@ def get_correct_and_present_indexes():
             correct_indexes[letter].append(tile_count % 5)
         if data_state == "present":
             present_indexes[letter].append(tile_count % 5)
+        if data_state == "absent":
+            absent_indexes[letter].append(tile_count % 5)
         if tile_count != 0 and tile_count % 5 == 0 and next_row[0][1] != "empty":
             last_row = next_row
             next_row = [(letter, data_state)]
@@ -83,7 +91,7 @@ def get_correct_and_present_indexes():
     counts = collections.Counter(
         [each[0] for each in last_row if each[1] == "present" or each[1] == "correct"]
     )
-    return (correct_indexes, present_indexes, counts)
+    return (correct_indexes, present_indexes, absent_indexes, counts)
 
 
 def get_next_word():
@@ -127,19 +135,18 @@ if __name__ == "__main__":
     # get backspace buton
     backspace_key = driver.find_element(By.XPATH, "//button[@aria-label='backspace']")
     while True:
-        (correct_indexes, present_indexes, counts) = get_correct_and_present_indexes()
+        (correct_indexes, present_indexes, absent_indexes, counts) = get_correct_present_and_absent_indexes()
         absent_letters = get_absent_letters()
-        words = filter_by_rules(
-            absent_letters, words, correct_indexes, present_indexes, counts
-        )
+        words = filter_by_rules(absent_letters, words, correct_indexes, present_indexes, absent_indexes, counts)
         if not words:
             print('well this is embarassing...')
-            while True:
-                input('press ctrl-c to close the browser')
+            dummy = input('press ctrl-c to close the browser')
+            sys.exit()
 
-        while len(correct_indexes) == 5:
+        if len(correct_indexes) == 5:
             print("solved!")
             input("press ctrl-c to close browser")
+            sys.exit()
         for next_letter in get_next_word():
             for key in keys:
                 if key.text == next_letter:
