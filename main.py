@@ -72,9 +72,8 @@ def get_correct_present_and_absent_indexes():
     absent_indexes = collections.defaultdict(list)
     last_row = []
     next_row = []
-    for tile in driver.find_elements(
-        By.XPATH, "//div[contains(@class, 'Tile-module_tile__UWEHN')]"
-    ):
+    all_tiles = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "//div[contains(@class, 'Tile-module_tile__UWEHN')]")))
+    for tile in all_tiles:
         data_state = tile.get_attribute("data-state")
         letter = tile.text.upper()
         next_row.append((letter, data_state))
