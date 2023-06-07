@@ -2,6 +2,8 @@ import selenium
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import random
 import collections
 import sys
@@ -114,14 +116,10 @@ if __name__ == "__main__":
         words = f.readlines()
     # open url
     driver.get("https://www.nytimes.com/games/wordle/index.html")
-    sleep(1)
-    # get keys to press
-    print("pressing the play button...")
-    play_button = driver.find_element(By.XPATH, '//button[@class="Welcome-module_button__ZG0Zh" and text()="Play"]')
+    play_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(((By.XPATH, '//button[@class="Welcome-module_button__ZG0Zh" and text()="Play"]')))) 
     play_button.click()
     print('getting the path element')
     c = driver.find_element(By.TAG_NAME, "path")
-    sleep(1)
     c.click()
     keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
     # get enter key, press after each word
