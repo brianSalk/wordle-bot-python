@@ -117,43 +117,44 @@ if __name__ == "__main__":
     else:
         print(f"{browser} not supported by this app")
         sys.exit(1)
+    try:
+        # load all 5-letter words from dictionary file
+        with open("five_upper") as f:
+            words = f.readlines()
+        # open url
+        driver.get("https://www.nytimes.com/games/wordle/index.html")
+        play_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(((By.XPATH, '//button[@class="Welcome-module_button__ZG0Zh" and text()="Play"]')))) 
+        play_button.click()
+        print('getting the path element')
+        c = driver.find_element(By.TAG_NAME, "path")
+        c.click()
+        keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
+        # get enter key, press after each word
+        enter_key = driver.find_element(By.XPATH, "//button[text()='enter']")
+        # get backspace buton
+        backspace_key = driver.find_element(By.XPATH, "//button[@aria-label='backspace']")
+        while True:
+            (correct_indexes, present_indexes, absent_indexes, counts) = get_correct_present_and_absent_indexes()
+            absent_letters = get_absent_letters()
+            words = filter_by_rules(absent_letters, words, correct_indexes, present_indexes, absent_indexes, counts)
+            if not words:
+                break
 
-    # load all 5-letter words from dictionary file
-    with open("five_upper") as f:
-        words = f.readlines()
-    # open url
-    driver.get("https://www.nytimes.com/games/wordle/index.html")
-    play_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(((By.XPATH, '//button[@class="Welcome-module_button__ZG0Zh" and text()="Play"]')))) 
-    play_button.click()
-    print('getting the path element')
-    c = driver.find_element(By.TAG_NAME, "path")
-    c.click()
-    keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
-    # get enter key, press after each word
-    enter_key = driver.find_element(By.XPATH, "//button[text()='enter']")
-    # get backspace buton
-    backspace_key = driver.find_element(By.XPATH, "//button[@aria-label='backspace']")
-    while True:
-        (correct_indexes, present_indexes, absent_indexes, counts) = get_correct_present_and_absent_indexes()
-        absent_letters = get_absent_letters()
-        words = filter_by_rules(absent_letters, words, correct_indexes, present_indexes, absent_indexes, counts)
-        if not words:
-            print('well this is embarassing...')
-            dummy = input('press ctrl-c to close the browser')
-            sys.exit()
-
-        if len(correct_indexes) == 5:
-            print("solved!")
-            input("press ctrl-c to close browser")
-            sys.exit()
-        for next_letter in get_next_word():
-            for key in keys:
-                if key.text == next_letter:
-                    key.click()
-               
-                if next_letter == "\n":
-                    enter_key.click()
-                    for _ in range(5):
-                        backspace_key.click()
-                    sleep(1.4)
-                    break
+            if len(correct_indexes) == 5:
+                break
+            for next_letter in get_next_word():
+                for key in keys:
+                    if key.text == next_letter:
+                        key.click()
+                   
+                    if next_letter == "\n":
+                        enter_key.click()
+                        for _ in range(5):
+                            backspace_key.click()
+                        sleep(1.4)
+                        break
+        print('press ctrl-c to close browser')
+        while True:
+            pass
+    except Exception:
+        print('Looks like something went wrong, try re-running the script.')
