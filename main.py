@@ -125,7 +125,6 @@ if __name__ == "__main__":
         driver.get("https://www.nytimes.com/games/wordle/index.html")
         play_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(((By.XPATH, '//button[@class="Welcome-module_button__ZG0Zh" and text()="Play"]')))) 
         play_button.click()
-        print('getting the path element')
         c = driver.find_element(By.TAG_NAME, "path")
         c.click()
         keys = driver.find_elements(By.XPATH, '//button[@class="Key-module_key__kchQI"]')
@@ -158,3 +157,4 @@ if __name__ == "__main__":
             pass
     except Exception:
         print('Looks like something went wrong, try re-running the script.')
+        driver.close()
