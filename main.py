@@ -123,6 +123,8 @@ if __name__ == "__main__":
             words = f.readlines()
         # open url
         driver.get("https://www.nytimes.com/games/wordle/index.html")
+        # click continue button, I swear they are trying to make it harder to scrape or someting
+        purr_blocker_btn = driver.find_element(By.CLASS_NAME,"purr-blocker-card__button").click()
         play_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(((By.XPATH, '//button[@class="Welcome-module_button__ZG0Zh" and text()="Play"]')))) 
         play_button.click()
         c = driver.find_element(By.TAG_NAME, "path")
