@@ -107,7 +107,7 @@ def get_next_word():
 
 
 if __name__ == "__main__":
-    browser = input("which browser do you use? (firefox,chrome,edge) ")
+    browser = input("which browser do you use? (firefox,chrome,edge) ").strip()
     if browser.lower() == "firefox":
         driver = webdriver.Firefox()
     elif browser.lower() == "chrome":
