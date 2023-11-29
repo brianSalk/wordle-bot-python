@@ -130,9 +130,15 @@ if __name__ == "__main__":
         # open url
         if len(sys.argv) == 1:
             driver.get("https://www.nytimes.com/games/wordle/index.html")
+            # the following commented out code is for a button that you 
+            # sometimes need to press to get to the play button
+            # I have no idea why they keep changing the interface
+            # they are probably trying to make it harder to scrape
+            """
             purr_blocker_btn = driver.find_element(
                 By.CLASS_NAME, "purr-blocker-card__button"
             ).click()
+            """
             play_button = WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located(
                     (
