@@ -127,7 +127,8 @@ if __name__ == "__main__":
         # load all 5-letter words from dictionary file
         with open("five_upper") as f:
             words = f.readlines()
-        # open url
+        # open url to wordle page.  eventually I plan to add some
+        # flags to allow for different urls like unlimited wordle
         if len(sys.argv) == 1:
             driver.get("https://www.nytimes.com/games/wordle/index.html")
             # the following commented out code is for a button that you 
