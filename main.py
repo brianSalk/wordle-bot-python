@@ -122,6 +122,7 @@ if __name__ == "__main__":
         driver = webdriver.Edge()
     else:
         print(f"{browser} not supported by this app")
+        print("Open an issue on github if you want me to add it")
         sys.exit(1)
     try:
         # load all 5-letter words from dictionary file
