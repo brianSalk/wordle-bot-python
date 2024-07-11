@@ -111,7 +111,7 @@ def get_next_word():
     # scrape tiles
     if not absent_letters and not correct_indexes and not present_indexes:
         # return starting word
-        return first_guesses[random.randint(0, len(first_guesses)-1)]
+        return random.choice(first_guesses)
     else:
         next_word = words[random.randint(0, len(words) - 1)]
         return next_word
@@ -146,12 +146,13 @@ if __name__ == "__main__":
                 By.CLASS_NAME, "purr-blocker-card__button"
             ).click()
             """
+            print('before find play button')
             play_button = WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located(
                     (
                         (
                             By.XPATH,
-                            '//button[@class="Welcome-module_button__ZG0Zh" and text()="Play"]',
+                            "//button[contains(@class, 'Welcome-module_button__ZG0Zh') and text()='Play']",
                         )
                     )
                 )
