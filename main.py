@@ -66,7 +66,11 @@ def get_absent_letters():
 
 def get_correct_present_and_absent_indexes():
     """
-    scrape page and get correct and present indexes
+    return the following 4 lists
+    indexes of correct (tile is be green)
+    indexes of present (tile is be yellow)
+    indexes of absent (tile is grey)
+    counts (how many times each present letter appears)
     """
     tile_count = 0
     correct_indexes = collections.defaultdict(list)
