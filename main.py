@@ -107,10 +107,11 @@ def get_next_word():
     """
     return next guess.
     """
+    first_guesses = ["SLATE\n", "CRANE\n", "SALET\n"]
     # scrape tiles
     if not absent_letters and not correct_indexes and not present_indexes:
         # return starting word
-        return ["SLATE\n", "CRANE\n", "SALET\n"][random.randint(0, 2)]
+        return first_guesses[random.randint(0, len(first_guesses)-1)]
     else:
         next_word = words[random.randint(0, len(words) - 1)]
         return next_word
