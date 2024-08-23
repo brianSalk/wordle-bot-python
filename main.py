@@ -146,7 +146,6 @@ if __name__ == "__main__":
                 By.CLASS_NAME, "purr-blocker-card__button"
             ).click()
             """
-            print('before find play button')
             play_button = WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located(
                     (
