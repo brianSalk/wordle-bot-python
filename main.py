@@ -137,6 +137,7 @@ if __name__ == "__main__":
         # flags to allow for different urls like unlimited wordle
         if len(sys.argv) == 1:
             driver.get("https://www.nytimes.com/games/wordle/index.html")
+            sleep(1) # even though I put a WebDriverWait below, this is still needed in Edge
             # the following commented out code is for a button that you 
             # sometimes need to press to get to the play button
             # I have no idea why they keep changing the interface
@@ -147,7 +148,7 @@ if __name__ == "__main__":
             ).click()
             """
             play_button = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located(
+                EC.presence_of_element_located(
                     (
                         (
                             By.XPATH,
@@ -157,7 +158,16 @@ if __name__ == "__main__":
                 )
             )
             play_button.click()
-            c = driver.find_element(By.TAG_NAME, "path")
+            c = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located(
+                        (
+                            (
+                                By.TAG_NAME,
+                                "path"
+                                )
+                            )
+                        )
+                    )
             c.click()
         else:
             driver.get("https://wordleunlimited.org/")
@@ -174,6 +184,15 @@ if __name__ == "__main__":
             driver.find_element(By.TAG_NAME, "path").click()
 
         # click continue button, I swear they are trying to make it harder to scrape or someting
+        keys = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located
+                (
+                    (
+                        By.XPATH,
+                        '//button[@class="Key-module_key__kchQI"]'
+                        )
+                    )
+                )
         keys = driver.find_elements(
             By.XPATH, '//button[@class="Key-module_key__kchQI"]'
         )
